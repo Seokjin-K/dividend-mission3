@@ -1,4 +1,4 @@
-package com.example.sample;
+package com.dividend.dayone;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

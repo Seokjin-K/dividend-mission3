@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: dividend
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: create # 프로젝트를 시작할 때마다 기존 테이블을 삭제하고 재생성. 개발 초기에만 사용
+      use-new-id-generator-mappings: false  # 현재 스프링 버전에 따라 설정이 상이하다.
+    show-sql: true # sql 쿼리를 출력
+    defer-datasource-initialization: true # 스프링 부트 2.5이상부터 sql 스크립트로 데이터를 초기화할 때 사용
+
+# DB 정보
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:dayone;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
