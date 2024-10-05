@@ -1,6 +1,8 @@
 package com.dividend.persist;
 
 import com.dividend.persist.entity.CompanyEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +19,6 @@ public interface CompanyRepository extends JpaRepository<CompanyEntity, Long> {
     // 데이터를 사용하는 쪽에서 바로 null 처리를 하지 않아도 되고, isPresent(),
     // orElse(), orElseThrow() 등과 같은 메서드를 통해 값을 안전하게 다룰 수 있다.
     Optional<CompanyEntity> findByName(String name);
+
+    Page<CompanyEntity> findByNameStartingWithIgnoreCase(String s, Pageable pageable); // LIKE 연산자
 }

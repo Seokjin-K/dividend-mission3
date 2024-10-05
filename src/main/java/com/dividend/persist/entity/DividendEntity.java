@@ -12,6 +12,14 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @NoArgsConstructor
+@Table(
+        uniqueConstraints = {
+                // 복합 유니크 키 설정. 두 값이 모두 동일할 때 중복.
+                // 중복된 데이터를 저장하려고 할 때 예외 발생
+                // INSERT IGNORE 또는 ON DUPLICATE KEY UPDATE 을 사용하여 처리
+                @UniqueConstraint(columnNames = {"companyId", "date"})
+        }
+)
 public class DividendEntity {
 
     @Id
