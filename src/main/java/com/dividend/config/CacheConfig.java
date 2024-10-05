@@ -34,7 +34,7 @@ public class CacheConfig {
                 .serializeKeysWith(RedisSerializationContext.SerializationPair // 키 직렬화
                         .fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair // 값 JSON 형식으로 직렬화
-                        //// 객체를 Redis 에 저장할 때 JSON 으로 변환되어 저장되며, 다시 객체로 역직렬화할 수 있다.
+                        // 객체를 Redis 에 저장할 때 JSON 으로 변환되어 저장되며, 다시 객체로 역직렬화할 수 있다.
                         .fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
         return RedisCacheManager.RedisCacheManagerBuilder

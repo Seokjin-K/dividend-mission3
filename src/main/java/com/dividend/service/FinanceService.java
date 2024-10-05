@@ -8,13 +8,14 @@ import com.dividend.persist.DividendRepository;
 import com.dividend.persist.entity.CompanyEntity;
 import com.dividend.persist.entity.DividendEntity;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class FinanceService {
@@ -22,7 +23,13 @@ public class FinanceService {
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
 
+
+    // @Cacheable 붙은 메서드는 캐시에 데이터가 없을 경우에는 메서드를 실행하고,
+    // 반환 값을 캐시에 추가, 캐시에 데이터가 있을 경우 메서드를 실행하지 않고,
+    // 캐시에 있는 데이터를 반환
+    @Cacheable(key = "#companyName", value = "finance") // 해당 key-value 는 Redis 의 key-value 와는 의미가 다름.
     public ScrapedResult getDividendByCompanyName(String companyName) {
+        log.info("search company -> " + companyName);
 
         // 1. 회사명을 기준으로 회사 정보를 조회
         CompanyEntity company = this.companyRepository.findByName(companyName)
@@ -36,23 +43,8 @@ public class FinanceService {
         List<Dividend> dividends = new ArrayList<>();
 
         for (var entity : dividendEntities) {
-            dividends.add(Dividend.builder()
-                    .date(entity.getDate())
-                    .dividend(entity.getDividend())
-                    .build());
+            dividends.add(new Dividend(entity.getDate(), entity.getDividend()));
         }
-
-        // stream 을 사용하여 변환
-        /*List<Dividend> dividends = dividendEntities.stream()
-                .map(entity -> Dividend.builder()
-                        .date(entity.getDate())
-                        .dividend(entity.getDividend())
-                        .build()).collect(Collectors.toList());*/
-
-        return new ScrapedResult(Company.builder()
-                .ticker(company.getTicker())
-                .name(company.getName())
-                .build(),
-                dividends);
+        return new ScrapedResult(new Company(company.getTicker(), company.getTicker()), dividends);
     }
 }
