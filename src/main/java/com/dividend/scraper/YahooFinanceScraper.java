@@ -1,5 +1,6 @@
 package com.dividend.scraper;
 
+import com.dividend.exception.impl.CompanyNotFoundException;
 import com.dividend.model.Company;
 import com.dividend.model.Dividend;
 import com.dividend.model.ScrapedResult;
@@ -78,11 +79,18 @@ public class YahooFinanceScraper implements Scraper {
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")
                     .timeout(5000)
                     .followRedirects(true);
+
             Document document = connection.get();
-            Element titleElem = document.getElementsByTag("h1").get(1);
+            Elements h1Elements = document.getElementsByTag("h1");
+            if (h1Elements.size() < 2) {
+                throw new CompanyNotFoundException();
+            }
+
+            Element titleElem = h1Elements.get(1);
             String title = titleElem.text().split("\\(")[0].trim();
 
             return new Company(ticker, title);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

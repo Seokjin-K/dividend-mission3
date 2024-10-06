@@ -1,5 +1,6 @@
 package com.dividend.service;
 
+import com.dividend.exception.impl.AlreadyExistCompanyException;
 import com.dividend.exception.impl.NoCompanyException;
 import com.dividend.model.Company;
 import com.dividend.model.ScrapedResult;
@@ -35,7 +36,7 @@ public class CompanyService {
         boolean exists = this.companyRepository.existsByTicker(ticker);
 
         if (exists) {
-            throw new RuntimeException("already exists ticker -> " + ticker);
+            throw new AlreadyExistCompanyException();
         }
         return this.storeCompanyAndDividend(ticker);
     }
