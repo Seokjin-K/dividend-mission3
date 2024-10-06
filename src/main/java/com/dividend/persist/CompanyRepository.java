@@ -20,5 +20,7 @@ public interface CompanyRepository extends JpaRepository<CompanyEntity, Long> {
     // orElse(), orElseThrow() 등과 같은 메서드를 통해 값을 안전하게 다룰 수 있다.
     Optional<CompanyEntity> findByName(String name);
 
+    Optional<CompanyEntity> findByTicker(String ticker);
+
     Page<CompanyEntity> findByNameStartingWithIgnoreCase(String s, Pageable pageable); // LIKE 연산자
 }

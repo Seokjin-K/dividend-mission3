@@ -1,5 +1,6 @@
 package com.dividend.service;
 
+import com.dividend.exception.impl.NoCompanyException;
 import com.dividend.model.Company;
 import com.dividend.model.ScrapedResult;
 import com.dividend.persist.CompanyRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,7 +69,7 @@ public class CompanyService {
         return company;
     }
 
-    public List<String> getCompanyNamesByKeyword(String keyword){
+    public List<String> getCompanyNamesByKeyword(String keyword) {
         Pageable limit = PageRequest.of(0, 10);
         Page<CompanyEntity> companyEntities = this.companyRepository.findByNameStartingWithIgnoreCase(keyword, limit);
         return companyEntities.stream()
@@ -88,5 +90,16 @@ public class CompanyService {
 
     public void deleteAutocompleteKeyword(String keyword) {
         this.trie.remove(keyword);
+    }
+
+    public String deleteCompany(String ticker) {
+        CompanyEntity company = this.companyRepository.findByTicker(ticker)
+                .orElseThrow(NoCompanyException::new);
+
+        this.dividendRepository.deleteAllByCompanyId(company.getId());
+        this.companyRepository.delete(company);
+
+        this.deleteAutocompleteKeyword(company.getName());
+        return company.getName();
     }
 }

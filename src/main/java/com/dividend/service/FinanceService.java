@@ -1,5 +1,6 @@
 package com.dividend.service;
 
+import com.dividend.exception.impl.NoCompanyException;
 import com.dividend.model.Company;
 import com.dividend.model.Dividend;
 import com.dividend.model.ScrapedResult;
@@ -10,7 +11,6 @@ import com.dividend.persist.entity.CompanyEntity;
 import com.dividend.persist.entity.DividendEntity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class FinanceService {
 
         // 1. 회사명을 기준으로 회사 정보를 조회
         CompanyEntity company = this.companyRepository.findByName(companyName)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회사명입니다."));
+                .orElseThrow(NoCompanyException::new);
         // 값이 없으면 인자로 넘겨주는 예외를 발생, 값이 있다면 Optional 을 언박싱한 데이터를 반환.
 
         // 2. 조회된 회사 ID로 배당금을 조회
